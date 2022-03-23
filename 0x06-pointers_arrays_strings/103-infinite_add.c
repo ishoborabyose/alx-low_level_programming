@@ -1,81 +1,51 @@
 #include "main.h"
-
-char *add_strings(char *n1, char *n2, char *r, int r_index);
-char *infinite_add(char *n1, char *n2, char *r, int size_r);
+#include <stdlib.h>
+#include <string.h>
 
 /**
- * add_strings - Adds the numbers stored in two strings.
- * @n1: The string containing the first number to be added.
- * @n2: The string containing the second number to be added.
- * @r: The buffer to store the result.
- * @r_index: The current index of the buffer.
+ * infinite_add - Adds to numbers in a string
+ * @n1: The number
+ * @n2: The number
+ * @r: The result
+ * @size_r: The qty
  *
- * Return: If r can store the sum - a pointer to the result.
- *         If r cannot store the sum - 0.
- */
-char *add_strings(char *n1, char *n2, char *r, int r_index)
-{
-	int num, tens = 0;
-
-	for (; *n1 && *n2; n1--, n2--, r_index--)
-	{
-		num = (*n1 - '0') + (*n2 - '0');
-		num += tens;
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
-	}
-
-	for (; *n1; n1--, r_index--)
-	{
-		num = (*n1 - '0') + tens;
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
-	}
-
-	for (; *n2; n2--, r_index--)
-	{
-		num = (*n2 - '0') + tens;
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
-	}
-
-	if (tens && r_index >= 0)
-	{
-		*(r + r_index) = (tens % 10) + '0';
-		return (r + r_index);
-	}
-
-	else if (tens && r_index < 0)
-		return (0);
-
-	return (r + r_index + 1);
-}
-/**
- * infinite_add - Adds two numbers.
- * @n1: The first number to be added.
- * @n2: The second number to be added.
- * @r: The buffer to store the result.
- * @size_r: The buffer size.
- *
- * Return: If r can store the sum - a pointer to the result.
- *         If r cannot store the sum - 0.
+ * Return: none
  */
 char *infinite_add(char *n1, char *n2, char *r, int size_r)
 {
-	int index, n1_len = 0, n2_len = 0;
+	char t;
+	int  i, j, k, size_1, size_2, a, b, c =  0;
 
-	for (index = 0; *(n1 + index); index++)
-		n1_len++;
+	size_1 = strlen(n1);
+	size_2 = strlen(n2);
 
-	for (index = 0; *(n2 + index); index++)
-		n2_len++;
-
-	if (size_r <= n1_len + 1 || size_r <= n2_len + 1)
+	if (size_1 > (size_r - 1) || size_2 > (size_r - 1))
 		return (0);
 
-	n1 += n1_len - 1;
-	n2 += n2_len - 1;
-	*(r + size_r) = '\0';
+	for (i = --size_1, j = --size_2, k = 0; i >= 0 || j >= 0; k++)
+	{
+		if (i >= 0)
+			a = n1[i--] - 48;
+		else
+			a = 0;
+		if (j >= 0)
+			b = n2[j--] - 48;
+		else
+			b = 0;
+		r[k] = (a + b + c) % 10 + 48;
+		c = (a + b + c) / 10;
+		if (k >= (size_r - 2))
+			return (0);
+	}
+	if (c > 0)
+		r[k++] = c + 48;
+	r[k] = '\0';
+	for (i = 0; i < (k / 2); i++)
+	{
+		t = r[i];
+		r[i] = r[k - i - 1];
+		r[k - i - 1] = t;
+	}
 
-	return (add_strings(n1, n2, r, --size_r));
+	return (r);
 }
