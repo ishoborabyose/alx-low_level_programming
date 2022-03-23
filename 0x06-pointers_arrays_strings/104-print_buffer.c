@@ -1,46 +1,52 @@
 #include "main.h"
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
 
 /**
- * print_buffer - Prints a buffer.
- * @b: The buffer
- * @size: The size
- *
- * Return: none
+ * print_buffer - Prints a buffer 10 bytes at a time, starting with
+ *                the byte position, then showing the hex content,
+ *                then displaying printable charcaters.
+ * @b: The buffer to be printed.
+ * @size: The number of bytes to be printed from the buffer.
  */
 void print_buffer(char *b, int size)
 {
-	int  i, j;
-	char b_str[11], b_hex[26];
+	int byte, index;
 
-	for (i = 0; i < size; i++)
+	for (byte = 0; byte < size; byte += 10)
 	{
-		b_hex[0] = '\0';
-		if ((i % 10) == 0)
+		printf("%08x: ", byte);
+
+		for (index = 0; index < 10; index++)
 		{
-			printf("%08x:", i);
-			for (j = 0; j < 10; j++)
-			{
-				if ((j + i) >= size)
-					if ((j % 2) == 0)
-						sprintf(b_hex, "%s   ", b_hex);
-					else
-						sprintf(b_hex, "%s  ", b_hex);
-				else
-				{
-					if ((j % 2) == 0)
-						sprintf(b_hex, "%s %02x", b_hex, b[i + j]);
-					else
-						sprintf(b_hex, "%s%02x", b_hex, b[i + j]);
-					b_str[j] = b[i + j] < 32 ? '.' : b[i + j];
-					b_str[j + 1] = '\0';
-				}
-			}
-			printf("%s %s", b_hex, b_str);
-			printf("\n");
+			if ((index + byte) >= size)
+				printf("  ");
+
+			else
+				printf("%02x", *(b + index + byte));
+
+			if ((index % 2) != 0 && index != 0)
+				printf(" ");
 		}
+
+		for (index = 0; index < 10; index++)
+		{
+			if ((index + byte) >= size)
+				break;
+
+			else if (*(b + index + byte) >= 31 &&
+				 *(b + index + byte) <= 126)
+				printf("%c", *(b + index + byte));
+
+			else
+				printf(".");
+		}
+
+		if (byte >= size)
+			continue;
+
+		printf("\n");
 	}
-	if (size == 0)
+
+	if (size <= 0)
 		printf("\n");
 }
