@@ -13,48 +13,39 @@
  */
 char *infinite_add(char *n1, char *n2, char *r, int size_r)
 {
-	int  i, j, a = 0, b = 0, c = 0, d = 0;
-	int s_n1 = 0, s_n2 = 0, s_r = 0;
+	char t;
+	int  i, j, k, size_1, size_2, a, b, c =  0;
 
-	r = '\0';
-	s_n1 = strlen(n1);
-	s_n2 = strlen(n2);
-	if (size_r < s_n1 || size_r < s_n2)
-		return (r);
-	s_r = size_r - 1;
-	for (i = (s_n1 - 1), j = (s_n2 - 1); i >= 0 || j >= 0;)
+	size_1 = strlen(n1);
+	size_2 = strlen(n2);
+
+	if (size_1 > (size_r - 1) || size_2 > (size_r - 1))
+		return (0);
+
+	for (i = --size_1, j = --size_2, k = 0; i >= 0 || j >= 0; k++)
 	{
-		if (n1[i] != '\0')
-		{
-			a = n1[i] - 48;
-			i--;
-		}
+		if (i >= 0)
+			a = n1[i--] - 48;
 		else
-		{
 			a = 0;
-			i = 0;
-		}
-		if (n2[j] != '\0')
-		{
-			b = n2[j] - 48;
-			j--;
-		}
+		if (j >= 0)
+			b = n2[j--] - 48;
 		else
-		{
 			b = 0;
-			j = 0;
-		}
-		c = (a + b + d) / 10;
-		printf("%c", (a + b + d) % 10 + 48);
-		/* *(r+(s_r - 1)) = (a + b + d) % 10 + 48; */
-		r[i] = (a + b + d) % 10 + 48;
-		d = c;
-		s_r--;
+		r[k] = (a + b + c) % 10 + 48;
+		c = (a + b + c) / 10;
+		if (k >= (size_r - 2))
+			return (0);
 	}
-	printf("%c", d % 10 + 48);
-	printf("\n");
-	getchar();
-	/* r[size_r - 1] = '\0'; */
+	if (c > 0)
+		r[k++] = c + 48;
+	r[k] = '\0';
+	for (i = 0; i < (k / 2); i++)
+	{
+		t = r[i];
+		r[i] = r[k - i - 1];
+		r[k - i - 1] = t;
+	}
 
 	return (r);
 }
